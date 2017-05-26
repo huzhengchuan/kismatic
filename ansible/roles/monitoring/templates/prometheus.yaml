@@ -11,12 +11,12 @@ alertmanager:
     ## If true, alertmanager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: {% if prometheus_monitoring_alertmanager_persistent_volume_claim_name is defined and prometheus_monitoring_alertmanager_persistent_volume_claim_name != "" %}true{% else %}false{% endif %}
+    enabled: {% if alertmanager_pvc_name is defined and alertmanager_pvc_name != "" %}true{% else %}false{% endif %}
     
     ## alertmanager data Persistent Volume existing claim name
     ## Requires alertmanager.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: {% if prometheus_monitoring_alertmanager_persistent_volume_claim_name is defined and prometheus_monitoring_alertmanager_persistent_volume_claim_name != "" %}{{ prometheus_monitoring_alertmanager_persistent_volume_claim_name }}{% else %}""{% endif %}
+    existingClaim: {% if alertmanager_pvc_name is defined and alertmanager_pvc_name != "" %}{{ alertmanager_pvc_name }}{% else %}""{% endif %}
   
   service:
     type: NodePort
@@ -61,12 +61,12 @@ server:
     ## If true, alertmanager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: {% if prometheus_monitoring_server_persistent_volume_claim_name is defined and prometheus_monitoring_server_persistent_volume_claim_name != "" %}true{% else %}false{% endif %}  
+    enabled: {% if prometheus_pvc_name is defined and prometheus_pvc_name != "" %}true{% else %}false{% endif %}  
     
     ## alertmanager data Persistent Volume existing claim name
     ## Requires alertmanager.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: {% if prometheus_monitoring_server_persistent_volume_claim_name is defined and prometheus_monitoring_server_persistent_volume_claim_name != "" %}{{ prometheus_monitoring_server_persistent_volume_claim_name }}{% else %}""{% endif %}
+    existingClaim: {% if prometheus_pvc_name is defined and prometheus_pvc_name != "" %}{{ prometheus_pvc_name }}{% else %}""{% endif %}
 
   service:
     type: NodePort

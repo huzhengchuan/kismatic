@@ -1,35 +1,35 @@
   - name: wait until the prometheus-server pods are ready
-    command: kubectl get deployment prometheus-prometheus-server -n monitoring -o jsonpath='{.status.availableReplicas}'
+    command: kubectl get deployment {{ feature_name }}-prometheus-prometheus-server -n {{ feature_namespace }} -o jsonpath='{.status.availableReplicas}'
     register: readyReplicas
     until: readyReplicas.stdout|int == 1
     retries: 24
     delay: 10
     failed_when: false # We don't want this task to actually fail (We catch the failure with a custom msg in the next task)
-    when: prometheus_monitoring_server_persistent_volume_claim_name is not defined or prometheus_monitoring_server_persistent_volume_claim_name == ""
+    when: prometheus_pvc_name is not defined or prometheus_pvc_name == ""
   - name: fail if the prometheus-server pods are not ready
     fail:
       msg: "Timed out waiting for the prometheus-server pods to be in the ready state."
     when: >
       readyReplicas.stdout|int != 1 and
-      (prometheus_monitoring_server_persistent_volume_claim_name is defined and prometheus_monitoring_server_persistent_volume_claim_name != "")
+      (prometheus_pvc_name is defined and prometheus_pvc_name != "")
 
   - name: wait until the prometheus-alertmanager pods are ready
-    command: kubectl get deployment prometheus-prometheus-alertmanager -n monitoring -o jsonpath='{.status.availableReplicas}'
+    command: kubectl get deployment {{ feature_name }}-prometheus-prometheus-alertmanager -n {{ feature_namespace }} -o jsonpath='{.status.availableReplicas}'
     register: readyReplicas
     until: readyReplicas.stdout|int == 1
     retries: 24
     delay: 10
-    when: prometheus_monitoring_alertmanager_persistent_volume_claim_name is not defined or prometheus_monitoring_alertmanager_persistent_volume_claim_name == ""
+    when: alertmanager_pvc_name is not defined or alertmanager_pvc_name == ""
     failed_when: false # We don't want this task to actually fail (We catch the failure with a custom msg in the next task)
   - name: fail if the prometheus-alertmanager pods are not ready
     fail:
       msg: "Timed out waiting for the prometheus-alertmanager pods to be in the ready state."
     when: >
       readyReplicas.stdout|int != 1 and
-      (prometheus_monitoring_alertmanager_persistent_volume_claim_name is defined and prometheus_monitoring_alertmanager_persistent_volume_claim_name != "")
+      (alertmanager_pvc_name is defined and alertmanager_pvc_name != "")
 
   - name: wait until the prometheus-kube-state-metrics pods are ready
-    command: kubectl get deployment prometheus-prometheus-kube-state-metrics -n monitoring -o jsonpath='{.status.availableReplicas}'
+    command: kubectl get deployment {{ feature_name }}-prometheus-prometheus-kube-state-metrics -n {{ feature_namespace }} -o jsonpath='{.status.availableReplicas}'
     register: readyReplicas
     until: readyReplicas.stdout|int == 1
     retries: 24
@@ -41,14 +41,14 @@
     when: readyReplicas.stdout|int != 1
 
   - name: get desired number of prometheus-node-exporter pods
-    command: kubectl get ds prometheus-prometheus-node-exporter -o=jsonpath='{.status.desiredNumberScheduled}' --namespace=monitoring --kubeconfig {{ kubernetes_kubeconfig_path }}
+    command: kubectl get ds {{ feature_name }}-prometheus-prometheus-node-exporter -o=jsonpath='{.status.desiredNumberScheduled}' --namespace={{ feature_namespace }} --kubeconfig {{ kubernetes_kubeconfig_path }}
     register: desiredPods
     until: desiredPods|success
     retries: 20
     delay: 6
     run_once: true
   - name: wait until all prometheus-node-exporter pods are ready
-    command: kubectl get ds prometheus-prometheus-node-exporter -o=jsonpath='{.status.numberReady}' --namespace=monitoring --kubeconfig {{ kubernetes_kubeconfig_path }}
+    command: kubectl get ds {{ feature_name }}-prometheus-prometheus-node-exporter -o=jsonpath='{.status.numberReady}' --namespace={{ feature_namespace }} --kubeconfig {{ kubernetes_kubeconfig_path }}
     register: readyPods
     until: desiredPods.stdout|int == readyPods.stdout|int
     retries: 20
@@ -62,16 +62,16 @@
     when: desiredPods.stdout|int != readyPods.stdout|int
 
   - name: wait until the grafana pods are ready
-    command: kubectl get deployment grafana-grafana -n monitoring -o jsonpath='{.status.availableReplicas}'
+    command: kubectl get deployment {{ feature_name }}-grafana-grafana -n {{ feature_namespace }} -o jsonpath='{.status.availableReplicas}'
     register: readyReplicas
     until: readyReplicas.stdout|int == 1
     retries: 24
     delay: 10
     failed_when: false # We don't want this task to actually fail (We catch the failure with a custom msg in the next task)
-    when: grafana_monitoring_persistent_volume_claim_name is not defined or grafana_monitoring_persistent_volume_claim_name == "" 
+    when: grafana_pvc_name is not defined or grafana_pvc_name == "" 
   - name: fail if the grafana pods are not ready
     fail:
       msg: "Timed out waiting for the grafana pods to be in the ready state."
     when: >
       readyReplicas.stdout|int != 1 and
-      (grafana_monitoring_persistent_volume_claim_name is defined and grafana_monitoring_persistent_volume_claim_name != "")
+      (grafana_pvc_name is defined and grafana_pvc_name != "")

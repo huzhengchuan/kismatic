@@ -8,6 +8,14 @@ import (
 	"github.com/apprenda/kismatic/pkg/ssh"
 )
 
+func PackageManagerProviders() []string {
+	return []string{"helm"}
+}
+
+func MonitoringProviders() []string {
+	return []string{"prometheus"}
+}
+
 // NetworkConfig describes the cluster's networking configuration
 type NetworkConfig struct {
 	Type             string
@@ -109,6 +117,7 @@ type Plan struct {
 	Cluster        Cluster
 	Docker         Docker
 	DockerRegistry DockerRegistry `yaml:"docker_registry"`
+	AddOns         AddOns
 	Features       Features
 	Etcd           NodeGroup
 	Master         MasterNodeGroup
@@ -139,19 +148,24 @@ type SSHConnection struct {
 	Node      *Node
 }
 
-type Features struct {
+type AddOns struct {
 	PackageManager PackageManager `yaml:"package_manager"`
-	Monitoring     Monitoring
+}
+
+type Features struct {
+	Monitoring []Feature
+}
+
+type Feature struct {
+	Provider  string
+	Name      string
+	Namespace string
+	Options   map[string]string
 }
 
 type PackageManager struct {
-	Enabled bool
-}
-
-type Monitoring struct {
-	Enabled    bool
-	Prometheus Prometheus
-	Grafana    Grafana
+	Enabled  bool
+	Provider string
 }
 
 type Prometheus struct {

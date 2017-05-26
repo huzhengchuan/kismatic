@@ -61,21 +61,21 @@ docker_registry:
   address: {{.DockerRegistryIP}}
   port: {{.DockerRegistryPort}}
   CA: {{.DockerRegistryCAPath}}
-features:
+addons:
   package_manager:
     enabled: {{.EnableHelm}}
+    provider: helm
+features:
   monitoring:
-    enabled: {{.EnableHelm}}
-    prometheus:
-      values: ""
-      alertmanager_storage:
-         persistent_volume_claim: "{{.AlertManagerPVC}}"
-      server_storage:
-        persistent_volume_claim: "{{.PrometheusPVC}}"
-    grafana:
-      values: ""
-      storage:
-        persistent_volume_claim: "{{.GrafanaPVC}}"
+  - provider: prometheus
+    name: cluster-monitoring
+    namespace: monitoring
+    options:
+      prometheus_config_file: ""
+      grafana_config_file: ""
+      prometheus_pvc_name: {{.PrometheusPVC}}
+      alertmanager_pvc_name: {{.AlertManagerPVC}}
+      grafana_pvc_name: {{.GrafanaPVC}}
 etcd:
   expected_count: {{len .Etcd}}
   nodes:{{range .Etcd}}

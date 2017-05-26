@@ -10,12 +10,12 @@ server:
     ## If true, Grafana will create a Persistent Volume Claim
     ## If false, use emptyDir
     ##   
-    enabled: {% if grafana_monitoring_persistent_volume_claim_name is defined and grafana_monitoring_persistent_volume_claim_name != "" %}true{% else %}false{% endif %}  
+    enabled: {% if grafana_pvc_name is defined and grafana_pvc_name != "" %}true{% else %}false{% endif %}  
 
     ## Grafana data Persistent Volume existing claim name
     ## Requires server.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: {% if grafana_monitoring_persistent_volume_claim_name is defined and grafana_monitoring_persistent_volume_claim_name != "" %}{{ grafana_monitoring_persistent_volume_claim_name }}{% else %}""{% endif %}
+    existingClaim: {% if grafana_pvc_name is defined and grafana_pvc_name != "" %}{{ grafana_pvc_name }}{% else %}""{% endif %}
 
   serviceType: NodePort
 

@@ -18,10 +18,10 @@
   - name: run helm install prometheus
     local_action: >
         command ../../helm install ../../charts/monitoring/prometheus
-        --namespace=monitoring
-        --name=prometheus
+        --namespace={{ feature_namespace }}
+        --name={{ feature_name }}-prometheus
         -f ../../charts/monitoring/prometheus/kismatic.yaml
-        {% if prometheus_monitoring_config_file is defined and prometheus_monitoring_config_file != "" %}-f {{ prometheus_monitoring_config_file }}{% endif %}
+        {% if prometheus_config_file is defined and prometheus_config_file != "" %}-f {{ prometheus_config_file }}{% endif %}
     become: no
     when: '"prometheus" not in out.stdout'
 
@@ -47,11 +47,11 @@
   - name: run helm install grafana
     local_action: >
         command ../../helm install ../../charts/monitoring/grafana
-        --namespace=monitoring
-        --name=grafana
+        --namespace={{ feature_namespace }}
+        --name={{ feature_name }}-grafana
         -f ../../charts/monitoring/grafana/kismatic.yaml
         -f ../../charts/monitoring/grafana/dashboards.yaml
-        {% if grafana_monitoring_config_file is defined and grafana_monitoring_config_file != "" %}-f {{ grafana_monitoring_config_file }}{% endif %}
+        {% if grafana_config_file is defined and grafana_config_file != "" %}-f {{ grafana_config_file }}{% endif %}
     become: no
     when: '"grafana" not in out.stdout'
 

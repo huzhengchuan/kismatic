@@ -157,10 +157,6 @@ func WritePlanTemplate(p *Plan, w PlanReadWriter) error {
 	// Set Certificate defaults
 	p.Cluster.Certificates.Expiry = "17520h"
 
-	// Features
-	p.Features.PackageManager.Enabled = true
-	p.Features.Monitoring.Enabled = true
-
 	// Set DockerRegistry defaults
 	p.DockerRegistry.Port = 8443
 

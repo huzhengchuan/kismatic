@@ -70,12 +70,8 @@ type ClusterCatalog struct {
 
 	LocalKubeconfigDirectory string `yaml:"local_kubeconfig_directory"`
 
-	// monitroing
-	PrometheusMonitoringConfigFile                            string `yaml:"prometheus_monitoring_config_file"`
-	PrometheusMonitoringAlertmanagerPersistentVolumeClaimName string `yaml:"prometheus_monitoring_alertmanager_persistent_volume_claim_name,omitempty"`
-	PrometheusMonitoringServerPersistentVolumeClaimName       string `yaml:"prometheus_monitoring_server_persistent_volume_claim_name,omitempty"`
-	GrafanaMonitoringConfigFile                               string `yaml:"grafana_monitoring_config_file"`
-	GrafanaMonitoringPersistentVolumeClaimName                string `yaml:"grafana_monitoring_persistent_volume_claim_name,omitempty"`
+	// additional options
+	AdditionalOptions map[string]string `yaml:",inline"`
 }
 
 type NFSVolume struct {
