@@ -79,13 +79,13 @@ func doPlan(in io.Reader, out io.Writer, planner install.Planner, planFile strin
 	}
 
 	fmt.Fprintln(out, "Cluster Add-Ons:")
-	packageManagerChoice, err := util.PromptForString(in, out, "Enable package manager (set to 'none' if not required)", "helm", append(install.PackageManagerProviders(), "none"))
+	packageManagerChoice, err := util.PromptForString(in, out, "Enable package manager (set to 'none' if not required)", install.DefaultPackageManagerProvider(), append(install.PackageManagerProviders(), "none"))
 	if err != nil {
 		return fmt.Errorf("Error reading cluster package manager choice: %v", err)
 	}
 
 	fmt.Fprintln(out, "Cluster Features:")
-	monitoringChoice, err := util.PromptForString(in, out, "Enable cluster monitoring (set to 'none' if not required)", "prometheus", append(install.MonitoringProviders(), "none"))
+	monitoringChoice, err := util.PromptForString(in, out, "Enable cluster monitoring (set to 'none' if not required)", install.DefaultMonitoringProvider(), append(install.MonitoringProviders(), "none"))
 	if err != nil {
 		return fmt.Errorf("Error reading cluster monitoring choice: %v", err)
 	}

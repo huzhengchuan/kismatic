@@ -12,8 +12,16 @@ func PackageManagerProviders() []string {
 	return []string{"helm"}
 }
 
+func DefaultPackageManagerProvider() string {
+	return "helm"
+}
+
 func MonitoringProviders() []string {
 	return []string{"prometheus"}
+}
+
+func DefaultMonitoringProvider() string {
+	return "prometheus"
 }
 
 // NetworkConfig describes the cluster's networking configuration
@@ -153,7 +161,8 @@ type AddOns struct {
 }
 
 type Features struct {
-	Monitoring []Feature
+	Monitoring     []Feature
+	PackageManager *PackageManager `yaml:"package_manager,omitempty"`
 }
 
 type Feature struct {
