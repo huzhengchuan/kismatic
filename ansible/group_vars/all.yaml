@@ -293,3 +293,7 @@ volume_base_dir: data/
 volume_mode: 0777
 volume_replica_count: 2
 volume_distribution_count: 1
+
+# Features
+prometheus_config_file: "../../charts/prometheus.yaml"
+grafana_config_file: "../../charts/grafana.yaml"

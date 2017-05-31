@@ -19,8 +19,10 @@ PROVISIONER_VERSION = v1.2.0
 KUBERANG_VERSION = v1.1.3
 GO_VERSION = 1.8.0
 HELM_VERSION = v2.4.1
-CHARTS_REPO = https://github.com/dkoshkin/charts
-CHARTS_VERSION = v0.1
+CHARTS_REPO = https://apprenda.github.io/kismatic-charts/
+# Charts versions
+GRAFANA_VERSION = 0.3.5
+PROMETHEUS_VERSION = 3.0.2
 
 ifeq ($(origin GLIDE_GOOS), undefined)
 	GLIDE_GOOS := $(HOST_GOOS)
@@ -121,12 +123,15 @@ vendor-helm/out:
 	chmod +x vendor-helm/out/helm
 
 vendor-charts/out:
-	mkdir -p vendor-charts/out/
-	mkdir -p vendor-charts/charts/
-	curl -L $(CHARTS_REPO)/archive/$(CHARTS_VERSION).tar.gz | tar zx -C vendor-charts/charts --strip-components=1
-	mkdir -p vendor-charts/out/monitoring/
-	cp -r vendor-charts/charts/stable/prometheus vendor-charts/out/monitoring/prometheus
-	cp -r vendor-charts/charts/stable/grafana vendor-charts/out/monitoring/grafana
+	mkdir -p vendor-charts/out/charts/monitoring/prometheus
+	mkdir -p vendor-charts/out/config/monitoring/
+	mkdir -p vendor-charts/source/
+	curl $(CHARTS_REPO)/grafana-$(GRAFANA_VERSION).tgz -o vendor-charts/out/charts/monitoring/grafana/grafana.tgz
+	curl $(CHARTS_REPO)/prometheus-$(PROMETHEUS_VERSION).tgz -o vendor-charts/out/charts/monitoring/prometheus/prometheus.tgz
+	mkdir -p vendor-charts/source/grafana && tar zxf vendor-charts/out/charts/monitoring/grafana/grafana.tgz -C vendor-charts/source
+	mkdir -p vendor-charts/source/prometheus && tar zxf  vendor-charts/out/charts/monitoring/prometheus/prometheus.tgz -C vendor-charts/source
+	cp vendor-charts/source/grafana/values.yaml vendor-charts/out/config/monitoring/grafana.yaml
+	cp vendor-charts/source/prometheus/values.yaml vendor-charts/out/config/monitoring/prometheus.yaml
 
 dist: vendor-ansible/out vendor-provision/out vendor-kuberang/$(KUBERANG_VERSION) vendor-helm/out vendor-charts/out build build-inspector
 	mkdir -p out
@@ -141,7 +146,7 @@ dist: vendor-ansible/out vendor-provision/out vendor-kuberang/$(KUBERANG_VERSION
 	cp vendor-kuberang/$(KUBERANG_VERSION)/kuberang-linux-amd64 out/ansible/playbooks/kuberang/linux/amd64/kuberang
 	cp vendor-provision/out/provision-$(GOOS)-amd64 out/provision
 	cp vendor-helm/out/helm out/helm
-    cp -R vendor-charts/out out/charts/
+	cp -R vendor-charts/out/* out/
 	rm -f out/kismatic.tar.gz
 	tar -czf kismatic.tar.gz -C out .
 	mv kismatic.tar.gz out
