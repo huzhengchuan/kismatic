@@ -125,7 +125,7 @@ type Plan struct {
 	Cluster        Cluster
 	Docker         Docker
 	DockerRegistry DockerRegistry `yaml:"docker_registry"`
-	AddOns         AddOns
+	AddOns         AddOns         `yaml:"add_ons"`
 	Features       Features
 	Etcd           NodeGroup
 	Master         MasterNodeGroup
