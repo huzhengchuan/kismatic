@@ -46,3 +46,9 @@
 
     roles:
       - calico
+
+    post_tasks:
+      - name: remove old calico-policy-controller replication controller if exists
+        command: kubectl delete rc calico-policy-controller -n kube-system --now --ignore-not-found
+        failed_when: false
+        when: upgrading is defined and upgrading|bool == true
